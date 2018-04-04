@@ -10,7 +10,7 @@ import argparse
 from crontab import CronTab
 
 
-#*.py -l filepath -db dbname -col collection_name -f [go,interpro,pfam,prosite,smart,supfam] or all
+#*.py -l filepath -db dbname -col collection_name -f [go,interpro,pfam,prosite,smart,supfam] or all -update (months)
  
 def connectMongoDB(dbname,colname):
 	#connect to mongodb
@@ -59,7 +59,6 @@ def updateMongoDB(filepath,features,collection):
 				sequence = ''.join(sequence.split())
 				out_data['sequence'] = sequence
 				collection.save(out_data)
-				print("inserted!")
 				##rewind
 				id_flag = 0
 				ac_flag = 0
@@ -77,7 +76,7 @@ def createCrontab(dbname, colname, features):
 	job.month.every(4)
 	my_cron.write()
 	for job in my_cron:
-		print job
+		print (job)
 		
 def main():
 	parser = argparse.ArgumentParser()
@@ -85,7 +84,7 @@ def main():
 	parser.add_argument('-db', help="database name", required=True)
 	parser.add_argument('-col', help="collection name", required=True)
 	parser.add_argument('-f', nargs='+', help="features [go,interpro,pfam,prosite,smart,supfam]", required=True)
-	parser.add_argument('-update', nargs='?', default="manual", help="update option[auto, manual], default to manual")
+	parser.add_argument('-update', type=int, default=0, help="update options [#](every # months) , default to manual(0)")
 	args = parser.parse_args()
 	
 	filepath = args.l
@@ -96,7 +95,7 @@ def main():
 	colname = args.col
 	
 	if os.path.exists(filepath):
-		if len(args.f) == 1 and args.f[0] == 'all':
+		if len(args.f) == 1 and args.f[0].lower() == 'all':
 			features = {'go' : 1,'interpro' : 1,'pfam' : 1,'prosite' : 1,'smart' : 1,'supfam' : 1}
 		else:
 			for i in args.f:
