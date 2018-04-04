@@ -104,9 +104,9 @@ def main():
 		collection = connectMongoDB(dbname,colname)
 		updateMongoDB(filepath,features,collection)
 		
-		if args.update.lower() == 'auto':
+		if args.update > 0:
 			createCrontab(dbname, colname, args.f)
-			print("set auto update to 1st day month")
+			print("set auto update every {0} month".format(args.update))
 			
 	else:
 		print("File does not exist\n")
