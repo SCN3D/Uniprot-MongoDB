@@ -8,7 +8,21 @@ import sys
 import os.path
 import argparse
 from crontab import CronTab
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# create a file handler
+handler = logging.FileHandler('DBoperations.log')
+handler.setLevel(logging.INFO)
+
+# create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# add the handlers to the logger
+logger.addHandler(handler)
 
 #*.py -l filepath -db dbname -col collection_name -f [go,interpro,pfam,prosite,smart,supfam] or all -update (months)
  
@@ -102,14 +116,18 @@ def main():
 				features[i.lower()] = 1
 				
 		collection = connectMongoDB(dbname,colname)
+		logger.info('Update Data Base')
 		updateMongoDB(filepath,features,collection)
 		
 		if args.update > 0:
-			createCrontab(dbname, colname, args.f, args.update)
-			print("set auto update every {0} month".format(args.update))
+			createCrontab(dbname, colname, args.f,args.update)
+			logger.info("set auto update every {0} month".format(args.update))
+			#print("set auto update every {0} month".format(args.update))
+			
+		logger.info('Finish!')
 			
 	else:
-		print("File does not exist\n")
+		logger.warn('File does not exist')
 		sys.exit()
 	
   
