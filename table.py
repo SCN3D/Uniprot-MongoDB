@@ -11,7 +11,6 @@ import argparse
 import re
 import itertools
 
-#line = re.sub('[!@#$]', '', line)
 
 def connectMongoDB(dbname,colname):
 	#connect to mongodb
@@ -20,6 +19,7 @@ def connectMongoDB(dbname,colname):
 	db = client[dbname]
 	collection = db[colname]
 	return collection
+	
 def remove_duplicates(values):
     output = []
     seen = set()
@@ -30,14 +30,12 @@ def remove_duplicates(values):
             output.append(value)
             seen.add(value)
     return output
+	
 def merge_two_dicts(x, y):
     z = x.copy()   # start with x's keys and values
     z.update(y)    # modifies z with y's keys and values & returns None
     return z
-
-def	MongotoPTMannotation(proteinIDs,Tag_FTs,output_types,output_prefix):
-	pass
-
+	
 def tableGeneration(filepath,fts):
 	table = connectMongoDB('test','table')
 	# Open a file
@@ -90,7 +88,7 @@ def tableGeneration(filepath,fts):
 				id_flag = 0	
 				out_position = []
 	fp.close()
-
+	
 def main():
 	# parser = argparse.ArgumentParser()
 	# parser.add_argument('-l', help="local filepath", required=True)
@@ -98,6 +96,7 @@ def main():
 	fts = {'Phosphoserine':[],'Phosphothreonine':[],'Phosphotyrosine':[],'N6-acetyllysine':[],'Omega-N-methylarginine':[],
 	'N6-methyllysine':[],'N6,N6-dimethyllysine':[],'N6,N6,N6-trimethyllysine':[],'N-linked(GlcNAc)asparagine':[],
 	'S-palmitoylcysteine': [],'Pyrrolidonecarboxylicacid':[],'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-CterinSUMO)':[]}
+	
 	tableGeneration('test2.txt',fts)
 	# filepath = args.l
 	

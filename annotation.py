@@ -11,9 +11,6 @@ import argparse
 import re
 import itertools
 
-# list(itertools.chain.from_iterable(a)) #join lists
-#line = re.sub('[!@#$]', '', line)
-
 def connectMongoDB(dbname,colname):
 	#connect to mongodb
 	client = MongoClient('localhost', 27017)
@@ -85,14 +82,20 @@ def	MongotoPTMannotation(proteinIDs,Tag_FTs,output_types,output_prefix):
 def main():
 	# parser = argparse.ArgumentParser()
 	# parser.add_argument('-l', help="local filepath", required=True)
+	# parser.add_argument('-ft', nargs='+', help="feature keys", required=True)
+	# parser.add_argument('-id', nargs='+', help="id list", required=True)
 	# args = parser.parse_args()
-	fts = ['Phosphoserine','N6-methyllysine']
-	ids = ['001R_FRG3G','002L_FRG3G','003L_IIV3','003R_FRG3G','004R_FRG3G']
+	fts = ['Phosphoserine','N6-methyllysine','Phosphothreonine','Phosphotyrosine',
+	'N6-acetyllysine','Omega-N-methylarginine','N6,N6-dimethyllysine','N6,N6,N6-trimethyllysine','N-linked(GlcNAc)asparagine',
+	'S-palmitoylcysteine','Pyrrolidonecarboxylicacid','Glycyllysineisopeptide(Lys-Gly)(interchainwithG-CterinSUMO)']
+	ids = ['001R_FRG3G','002L_FRG3G','003L_IIV3','003R_FRG3G','004R_FRG3G','005L_IIV3','005R_FRG3G','006L_IIV6','006R_FRG3G']
 	
 	MongotoPTMannotation(ids,fts,1,'test')
 	# filepath = args.l
 	
 	# if os.path.exists(filepath):
+		#fts = args.ft
+		#ids = args.id
 		# tableGeneration(filepath,fts):
 			
 	# else:
