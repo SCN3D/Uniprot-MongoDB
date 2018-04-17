@@ -18,8 +18,6 @@ from crontab import CronTab
 #  -col COL          collection name
 #  -f F [F ...]      features [go,interpro,pfam,prosite,smart,supfam]
 #  -update [UPDATE]  update option[1,2,3,4,5……], default to manual(0)
-
- 
 def connectMongoDB(dbname,colname):
 	#connect to mongodb
 	client = MongoClient('localhost', 27017)
