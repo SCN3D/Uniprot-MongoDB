@@ -88,7 +88,6 @@ def tableGeneration(filepath,fts):
 				id_flag = 0	
 				out_position = []
 	fp.close()
-	
 def main():
 	# parser = argparse.ArgumentParser()
 	# parser.add_argument('-l', help="local filepath", required=True)

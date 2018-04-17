@@ -8,7 +8,6 @@ import sys
 import os.path
 import argparse
 from crontab import CronTab
-
 # usage: uniprotDB.py [-h] -l L -db DB -col COL -f F [F ...] [-update [UPDATE]]
 #
 # optional arguments:
@@ -17,7 +16,7 @@ from crontab import CronTab
 #  -db DB            database name
 #  -col COL          collection name
 #  -f F [F ...]      features [go,interpro,pfam,prosite,smart,supfam]
-#  -update [UPDATE]  update option[1,2,3,4,5â€¦â€¦], default to manual(0)
+#  -update [UPDATE]  update option[1,2,3,4,5¡­¡­], default to manual(0)
 def connectMongoDB(dbname,colname):
 	#connect to mongodb
 	client = MongoClient('localhost', 27017)
@@ -25,14 +24,12 @@ def connectMongoDB(dbname,colname):
 	db = client[dbname]
 	collection = db[colname]
 	return collection
-	
 def updateMongoDB(filepath,features,collection):
 	# Open a file
 	id_flag = 0
 	ac_flag = 0
 	out_ac = []
 	sequence = ''
-
 	out_data = dict()
 	with open(filepath) as fp:
 		for line in fp:
