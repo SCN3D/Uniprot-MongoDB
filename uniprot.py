@@ -46,7 +46,7 @@ def main():
 				
 		collection = functions.connectMongoDB(dbname,colname)
 		functions.updateMongoDB(filepath,features,collection,"1/1/1111")
-		functions.Config_edit(dt.now())
+		functions.Config_edit(dt.now().date())
 		
 		if args.update > 0:
 			functions.setAutoUpdate(dbname, colname, args.f, args.train, args.update)
