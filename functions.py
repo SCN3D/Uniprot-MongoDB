@@ -49,7 +49,7 @@ def connectMongoDB(dbname,colname):
 	
 def updateMongoDB(filepath,features,collection,date):
 	train = 1 
-	if date == "0/0/0":
+	if date == "1/1/1111":
 		train = 0
 	try:
 		old_date = dt.strptime(date, "%d/%m/%Y")
@@ -58,7 +58,7 @@ def updateMongoDB(filepath,features,collection,date):
 		sys.exit()
 		
 	# Open a file
-	out_date = dt.strptime("0/0/0", "%d/%m/%Y")
+	out_date = dt.strptime("1/1/1111", "%d/%m/%Y")
 	id_flag = 0
 	ac_flag = 0
 	out_ac = []
@@ -111,7 +111,7 @@ def updateMongoDB(filepath,features,collection,date):
 				ac_flag = 0
 				out_ac = []
 				sequence = ''
-				out_date = datetime.strptime("0/0/0", "%d/%m/%Y")
+				out_date = datetime.strptime("1/1/1111", "%d/%m/%Y")
 	fp.close()
 	if train == 1:
 		ids_file = open("train_ids.txt","w")

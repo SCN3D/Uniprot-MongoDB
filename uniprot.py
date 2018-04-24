@@ -45,7 +45,7 @@ def main():
 				features[i.lower()] = 1
 				
 		collection = functions.connectMongoDB(dbname,colname)
-		functions.updateMongoDB(filepath,features,collection,"0/0/0")
+		functions.updateMongoDB(filepath,features,collection,"1/1/1111")
 		functions.Config_edit(dt.now())
 		
 		if args.update > 0:
