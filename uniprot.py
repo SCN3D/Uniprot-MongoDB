@@ -17,6 +17,7 @@ from datetime import datetime as dt
 #  -col COL          collection name
 #  -f F [F ...]      features [go,interpro,pfam,prosite,smart,supfam]
 #  -update [UPDATE]  update option[1,2,3,4,5], default to manual 0
+#  -train            out put updated id list
 
 		
 def main():
@@ -26,7 +27,7 @@ def main():
 	parser.add_argument('-col', help="collection name", required=True)
 	parser.add_argument('-f', nargs='+', help="features [go,interpro,pfam,prosite,smart,supfam]", required=True)
 	parser.add_argument('-update', type=int, default=0, help="update options [#](every # months) , default to manual(0)")
-	parser.add_argument('-train', type=int, choices=[0,1],default=0, help="set 1 to auto train")
+	parser.add_argument('-train', type=int, choices=[0,1],default=0, help="out put updated id list")
 
 	args = parser.parse_args()
 	
