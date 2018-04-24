@@ -1,5 +1,5 @@
 ﻿import feedparser
-import datetime
+from datetime import datetime as dt
 import urllib
 import gzip
 import shutil
@@ -19,7 +19,7 @@ def rssread():
 	date = feed['updated'].split(' ')
 	new_date = date[1]+'/'+date[2]+'/'+date[3]
 
-	new_date = datetime.strptime(new_date,"%d/%b/%Y")
+	new_date = dt.strptime(new_date,"%d/%b/%Y")
 	return new_date
 
 def getUniprot():
@@ -34,7 +34,7 @@ def getUniprot():
 
 def valid_date(s):
     try:
-        return datetime.strptime(s, "%d/%m/%Y")
+        return dt.strptime(s, "%d/%m/%Y")
     except ValueError:
         msg = "Not a valid date: '{0}'.".format(s)
         raise argparse.ArgumentTypeError(msg)
@@ -52,13 +52,13 @@ def updateMongoDB(filepath,features,collection,date):
 	if date == "0/0/0":
 		train = 0
 	try:
-		old_date = datetime.strptime(date, "%d/%m/%Y")
+		old_date = dt.strptime(date, "%d/%m/%Y")
 	except ValueError:
 		print("Invalid date!")
 		sys.exit()
 		
 	# Open a file
-	out_date = datetime.strptime("0/0/0", "%d/%m/%Y")
+	out_date = dt.strptime("0/0/0", "%d/%m/%Y")
 	id_flag = 0
 	ac_flag = 0
 	out_ac = []
