@@ -83,7 +83,7 @@ def updateMongoDB(filepath,features,collection,date):
 						out_ac.append(data[x])
 				out_data = {'_id' : out_id,'ac':out_ac}
 			elif parsed_1[0] == "DT":
-				temp_date = datetime.strptime(parsed_1[1], "%d-%b-%Y")
+				temp_date = dt.strptime(parsed_1[1], "%d-%b-%Y")
 				if temp_date > out_date:
 					out_date = temp_date
 			elif len(parsed_1[0]) > 2:
@@ -111,7 +111,7 @@ def updateMongoDB(filepath,features,collection,date):
 				ac_flag = 0
 				out_ac = []
 				sequence = ''
-				out_date = datetime.strptime("1/1/1111", "%d/%m/%Y")
+				out_date = dt.strptime("1/1/1111", "%d/%m/%Y")
 	fp.close()
 	if train == 1:
 		ids_file = open("train_ids.txt","w")
