@@ -10,6 +10,7 @@ import os.path
 import argparse
 from crontab import CronTab
 import configparser
+import re
 
 def rssread():
 	url = 'https://www.uniprot.org/news/?format=rss'
@@ -83,7 +84,7 @@ def updateMongoDB(filepath,features,collection,date):
 						out_ac.append(data[x])
 				out_data = {'_id' : out_id,'ac':out_ac}
 			elif parsed_1[0] == "DT":
-				temp_date = dt.strptime(parsed_1[1], "%d-%b-%Y")
+				temp_date = dt.strptime(re.sub('[,]', '',parsed_1[1]), "%d-%b-%Y")
 				if temp_date > out_date:
 					out_date = temp_date
 			elif len(parsed_1[0]) > 2:
