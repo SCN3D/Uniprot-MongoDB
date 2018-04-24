@@ -2,11 +2,11 @@
 #vm: amazon linux 2 AMI
 #python 2.7.5
 #mongodb 3.6.3
-import functions.py
+import functions
 import sys
 import os.path
 import argparse
-
+import datetime as dt
 
 # usage: uniprotDB.py [-h] -l L -db DB -col COL -f F [F ...] [-update [UPDATE]]
 #
@@ -44,11 +44,12 @@ def main():
 			for i in args.f:
 				features[i.lower()] = 1
 				
-		collection = connectMongoDB(dbname,colname)
-		updateMongoDB(filepath,features,collection,"0/0/0")
+		collection = functions.connectMongoDB(dbname,colname)
+		functions.updateMongoDB(filepath,features,collection,"0/0/0")
+		functions.Config_edit(dt.now())
 		
 		if args.update > 0:
-			setAutoUpdate(dbname, colname, args.f, args.train, args.update)
+			functions.setAutoUpdate(dbname, colname, args.f, args.train, args.update)
 			print("Check for update every "+args.update+" months!")
 	else:
 		print("File does not exist\n")

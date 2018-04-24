@@ -1,5 +1,5 @@
 ﻿import feedparser
-from datetime import datetime as dt
+import datetime as dt
 import urllib
 import gzip
 import shutil
@@ -46,6 +46,7 @@ def connectMongoDB(dbname,colname):
 	db = client[dbname]
 	collection = db[colname]
 	return collection
+	
 def updateMongoDB(filepath,features,collection,date):
 	train = 1 
 	if date == "0/0/0":
