@@ -6,7 +6,7 @@ import functions
 import sys
 import os.path
 import argparse
-import datetime as dt
+import datetime 
 
 # usage: uniprotDB.py [-h] -l L -db DB -col COL -f F [F ...] [-update [UPDATE]]
 #
@@ -46,7 +46,7 @@ def main():
 				
 		collection = functions.connectMongoDB(dbname,colname)
 		functions.updateMongoDB(filepath,features,collection,"0/0/0")
-		functions.Config_edit(dt.now())
+		functions.Config_edit(datetime.now())
 		
 		if args.update > 0:
 			functions.setAutoUpdate(dbname, colname, args.f, args.train, args.update)

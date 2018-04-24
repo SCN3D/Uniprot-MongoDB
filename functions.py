@@ -1,5 +1,5 @@
 ﻿import feedparser
-import datetime as dt
+import datetime
 import urllib
 import gzip
 import shutil
@@ -19,7 +19,7 @@ def rssread():
 	date = feed['updated'].split(' ')
 	new_date = date[1]+'/'+date[2]+'/'+date[3]
 
-	new_date = dt.strptime(new_date,"%d/%b/%Y")
+	new_date = datetime.strptime(new_date,"%d/%b/%Y")
 	return new_date
 
 def getUniprot():
