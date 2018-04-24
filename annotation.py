@@ -38,7 +38,7 @@ def chunhui(id,seq):
 #output_type 1: duolin 2:chunhui 
 def	MongotoPTMannotation(proteinIDs,Tag_FTs,output_types,output_prefix):
 	table = connectMongoDB('test','table')
-	entry = connectMongoDB('uniprot','test')
+	entry = connectMongoDB('uniprot','entry')
 	file = []
 	out_data = ''
 	
@@ -53,7 +53,7 @@ def	MongotoPTMannotation(proteinIDs,Tag_FTs,output_types,output_prefix):
 			ptm = table.find_one({'_id': id})
 			print(ptm)
 			for index, ft in enumerate(Tag_FTs):
-				ft = re.sub('[.]', '',ft)
+				ft = re.sub('[.]', '',ft) #take off .
 				if ft in ptm:
 					seq = entry.find_one({'_id': id},{'sequence': 1})
 					sequence = seq['sequence']

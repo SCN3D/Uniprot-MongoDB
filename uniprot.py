@@ -2,12 +2,12 @@
 #vm: amazon linux 2 AMI
 #python 2.7.5
 #mongodb 3.6.3
-import pymongo
-from pymongo import MongoClient
+import functions.py
 import sys
 import os.path
 import argparse
-from crontab import CronTab
+
+
 # usage: uniprotDB.py [-h] -l L -db DB -col COL -f F [F ...] [-update [UPDATE]]
 #
 # optional arguments:
@@ -16,70 +16,8 @@ from crontab import CronTab
 #  -db DB            database name
 #  -col COL          collection name
 #  -f F [F ...]      features [go,interpro,pfam,prosite,smart,supfam]
-#  -update [UPDATE]  update option[1,2,3,4,5бнбн], default to manual(0)
-def connectMongoDB(dbname,colname):
-	#connect to mongodb
-	client = MongoClient('localhost', 27017)
-	# Get the database
-	db = client[dbname]
-	collection = db[colname]
-	return collection
-def updateMongoDB(filepath,features,collection):
-	# Open a file
-	id_flag = 0
-	ac_flag = 0
-	out_ac = []
-	sequence = ''
-	out_data = dict()
-	with open(filepath) as fp:
-		for line in fp:
-			collapsed = ' '.join(line.split())
-			data = collapsed.split(";")
-			parsed_1 = data[0].split(" ")
-			if parsed_1[0] == "ID" and  id_flag == 0:
-				id_flag = 1
-				out_id = parsed_1[1]
-				
-			elif parsed_1[0] == "AC" and  ac_flag == 0:
-				ac_flag = 1	
-				out_ac.append(parsed_1[1])
-				if len(data)  > 2:
-					for x in range(1, len(data)-1):
-						out_ac.append(data[x])
-				out_data = {'_id' : out_id,'ac':out_ac}
-			elif len(parsed_1[0]) > 2:
-				sequence += collapsed
-			##[go,interpro,pfam,prosite,smart,supfam]
-			elif parsed_1[0] == "DR" and  parsed_1[1].lower() in features:
-				if features[parsed_1[1].lower()] == 1:
-					parsed_2 = data[1].split(" ")
-					if parsed_1[1].lower() in out_data:
-						out_data[parsed_1[1].lower()].append(parsed_2[1])
-					else:
-						out_data[parsed_1[1].lower()] = [parsed_2[1]]
-			##
-			elif parsed_1[0] == '//':
-				sequence = ''.join(sequence.split())
-				out_data['sequence'] = sequence
-				collection.save(out_data)
-				##rewind
-				id_flag = 0
-				ac_flag = 0
-				out_ac = []
-				sequence = ''
-			
-			
-	fp.close()
-		
-def createCrontab(dbname, colname, features, update):
-	my_cron = CronTab(user='ec2-user')
-	fs = ' '.join(features)
-	cmd = "/usr/bin/python /home/ec2-user/test/uniprotDB.py -l /home/ec2-user/test/test2.txt -db %s -col %s -f %s" % (dbname, colname, fs)
-	job = my_cron.new(command=cmd)
-	job.month.every(update)
-	my_cron.write()
-	for job in my_cron:
-		print (job)
+#  -update [UPDATE]  update option[1,2,3,4,5], default to manual 0
+
 		
 def main():
 	parser = argparse.ArgumentParser()
@@ -88,6 +26,8 @@ def main():
 	parser.add_argument('-col', help="collection name", required=True)
 	parser.add_argument('-f', nargs='+', help="features [go,interpro,pfam,prosite,smart,supfam]", required=True)
 	parser.add_argument('-update', type=int, default=0, help="update options [#](every # months) , default to manual(0)")
+	parser.add_argument('-train', type=int, choices=[0,1],default=0, help="set 1 to auto train")
+
 	args = parser.parse_args()
 	
 	filepath = args.l
@@ -105,12 +45,11 @@ def main():
 				features[i.lower()] = 1
 				
 		collection = connectMongoDB(dbname,colname)
-		updateMongoDB(filepath,features,collection)
+		updateMongoDB(filepath,features,collection,"0/0/0")
 		
 		if args.update > 0:
-			createCrontab(dbname, colname, args.f, args.update)
-			print("set auto update every {0} month".format(args.update))
-			
+			setAutoUpdate(dbname, colname, args.f, args.train, args.update)
+			print("Check for update every "+args.update+" months!")
 	else:
 		print("File does not exist\n")
 		sys.exit()
