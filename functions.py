@@ -113,7 +113,7 @@ def updateMongoDB(filepath,features,collection,date):
 				out_date = datetime.strptime("0/0/0", "%d/%m/%Y")
 	fp.close()
 	if train == 1:
-		ids_file = open(“train_ids.txt”,”w”)
+		ids_file = open("train_ids.txt","w")
 		for id in train_ids:
 			ids_file.write(id)
 		ids_file.close()
