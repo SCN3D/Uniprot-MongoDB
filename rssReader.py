@@ -2,9 +2,11 @@
 #vm: amazon linux 2 AMI
 #python 2.7.5
 #mongodb 3.6.3
-import functions.py
+import functions
 import argparse
 import sys
+import configparser
+from datetime import datetime as dt
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -31,8 +33,9 @@ def main():
 			
 	config = configparser.ConfigParser()
 	config.read('config.ini')
-	old_date = config['DEFAULT']['date']
-	new_date = rssread()
+	old_date = dt.strptime(config['DEFAULT']['date'],"%Y-%m-%d")
+	
+	new_date = functions.rssread()
 	
 	if new_date > old_date:
 		getUniprot()
@@ -44,5 +47,7 @@ def main():
 			functions.Config_edit(new_date)
 		else:
 			print("error")
+	else:
+		print("No new update!")
 if __name__== "__main__":
 	main()
