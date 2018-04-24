@@ -126,7 +126,7 @@ def setAutoUpdate(dbname, colname, features, train, update):
 	fs = ' '.join(features)
 	cmd = "/usr/bin/python /home/ec2-user/Uniprot-MongoDB/rssReader.py -db "+dbname+" -col "+colname+" -f "+fs+" -train %s" %(train)
 	job = my_cron.new(command=cmd)
-	job.month.every(update)
+	job.every(update).months()
 	my_cron.write()
 	for job in my_cron:
 		print (job)
