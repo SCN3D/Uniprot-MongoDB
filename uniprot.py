@@ -50,7 +50,7 @@ def main():
 		
 		if args.update > 0:
 			functions.setAutoUpdate(dbname, colname, args.f, args.train, args.update)
-			print("Check for update every "+args.update+" months!")
+			print("Check for update every %s months!" % (args.update))
 	else:
 		print("File does not exist\n")
 		sys.exit()

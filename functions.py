@@ -124,7 +124,7 @@ def updateMongoDB(filepath,features,collection,date):
 def setAutoUpdate(dbname, colname, features, train, update):
 	my_cron = CronTab(user='ec2-user')
 	fs = ' '.join(features)
-	cmd = "/usr/bin/python /home/ec2-user/Uniprot-MongoDB/rssReader.py -db "+dbname+" -col "+colname+" -f "+fs+" -train "+train
+	cmd = "/usr/bin/python /home/ec2-user/Uniprot-MongoDB/rssReader.py -db "+dbname+" -col "+colname+" -f "+fs+" -train %s" %(train)
 	job = my_cron.new(command=cmd)
 	job.month.every(update)
 	my_cron.write()
