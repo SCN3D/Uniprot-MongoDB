@@ -25,7 +25,7 @@ def rssread():
 def getUniprot():
 	uniprot_url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'
 	urllib.urlretrieve(file_url, 'uniprot.txt.gz')
-    print("Unzip file...")
+	print("Unzip file...")
 	with gzip.open('uniprot.txt.gz', 'rb') as f_in:
 		with open('uniprot.txt', 'wb') as f_out:
 			shutil.copyfileobj(f_in, f_out)
