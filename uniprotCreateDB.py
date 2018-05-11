@@ -18,7 +18,7 @@ from datetime import datetime as dt
 #  -f F [F ...]      features [go,interpro,pfam,prosite,smart,supfam]
 #  -update [UPDATE]  update option[1,2,3,4,5], default to manual 0
 #  -train            set to 1 for out put updated id list,default 0
-
+# example: uniprotCreateDB.py -l 'uniprot.txt' -dbname 'uniprot' -colname 'entry' -f 'go interpro pfam prosite smart supfam' -update 1
 		
 def main():
 	parser = argparse.ArgumentParser()
@@ -27,7 +27,6 @@ def main():
 	parser.add_argument('-col', help="collection name", required=True)
 	parser.add_argument('-f', nargs='+', help="features [go,interpro,pfam,prosite,smart,supfam]", required=True)
 	parser.add_argument('-update', type=int, default=0, help="update options [#](every # months) , default to manual(0)")
-	parser.add_argument('-train', type=int, choices=[0,1],default=0, help="set to 1 for out put updated id list,default 0")
 
 	args = parser.parse_args()
 	
@@ -44,13 +43,12 @@ def main():
 		else:
 			for i in args.f:
 				features[i.lower()] = 1
-				
-		collection = functions.connectMongoDB(dbname,colname)
-		functions.updateMongoDB(filepath,features,collection,"1/1/1111")
+		functions.updateMongoDB(filepath,features,dbname,colname,"1/1/1111")
 		functions.Config_edit(dt.now().date())
 		
 		if args.update > 0:
-			functions.setAutoUpdate(dbname, colname, args.f, args.train, args.update)
+			#train arg set to 1, so for output updated id list
+			functions.setAutoUpdate(dbname, colname, args.f, 1, args.update)
 			print("Check for update every %s months!" % (args.update))
 	else:
 		print("File does not exist\n")

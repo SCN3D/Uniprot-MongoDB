@@ -11,6 +11,8 @@ import argparse
 from crontab import CronTab
 import configparser
 import re
+import json
+import itertools
 
 def rssread():
 	url = 'https://www.uniprot.org/news/?format=rss'
@@ -25,10 +27,10 @@ def rssread():
 
 def getUniprot():
 	uniprot_url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'
-	urllib.urlretrieve(file_url, 'uniprot.txt.gz')
+	urllib.urlretrieve(uniprot_url, 'uniprot.txt.gz')
 	print("Unzip file...")
 	with gzip.open('uniprot.txt.gz', 'rb') as f_in:
-		with open('uniprot.txt', 'wb') as f_out:
+		with open('./uniprotData/uniprot.txt', 'wb') as f_out:
 			shutil.copyfileobj(f_in, f_out)
 	print("File name:uniprot.txt")
 
@@ -48,7 +50,7 @@ def connectMongoDB(dbname,colname):
 	collection = db[colname]
 	return collection
 	
-def updateMongoDB(filepath,features,collection,date):
+def updateMongoDB(filepath,features,dbname,colname,date):
 	train = 1 
 	if date == "1/1/1111":
 		train = 0
@@ -57,7 +59,7 @@ def updateMongoDB(filepath,features,collection,date):
 	except ValueError:
 		print("Invalid date!")
 		sys.exit()
-		
+	collection = connectMongoDB(dbname,colname)
 	# Open a file
 	out_date = dt.strptime("1/1/1111", "%d/%m/%Y")
 	id_flag = 0
@@ -87,8 +89,7 @@ def updateMongoDB(filepath,features,collection,date):
 				temp_date = dt.strptime(re.sub('[,]', '',parsed_1[1]), "%d-%b-%Y")
 				if temp_date > out_date:
 					out_date = temp_date
-			elif len(parsed_1[0]) > 2:
-				sequence += collapsed
+			
 			##[go,interpro,pfam,prosite,smart,supfam]
 			elif parsed_1[0] == "DR" and  parsed_1[1].lower() in features:
 				if features[parsed_1[1].lower()] == 1:
@@ -98,6 +99,9 @@ def updateMongoDB(filepath,features,collection,date):
 					else:
 						out_data[parsed_1[1].lower()] = [parsed_2[1]]
 			##
+			## parse_1[0] is usually RT,DR,FT,or SQ etc... only squence part has length greater than 2
+			elif len(parsed_1[0]) > 2:
+				sequence += collapsed
 			elif parsed_1[0] == '//':
 				sequence = ''.join(sequence.split())
 				out_data['sequence'] = sequence
@@ -114,11 +118,18 @@ def updateMongoDB(filepath,features,collection,date):
 				sequence = ''
 				out_date = dt.strptime("1/1/1111", "%d/%m/%Y")
 	fp.close()
+	update_size = len(train_ids)
+	update_date = date
+	update_info = {'Database name':dbname,'Collection name':colname,'Number of Entries updated':update_size,'Update date':update_date} 
 	if train == 1:
-		ids_file = open("train_ids.txt","w")
+		ids_file = open("./output/train_ids.txt","w")
 		for id in train_ids:
 			ids_file.write(id)
 		ids_file.close()
+		info_file = open("./output/info.txt","w")
+		json.dump(update_info, info_file)
+		info_file.close()
+		##TODO: after generate update info, do something
 
 #a crontab job scheduler		
 def setAutoUpdate(dbname, colname, features, train, update):
@@ -136,3 +147,21 @@ def Config_edit(date):
 	config['DEFAULT'] = {'date': date}
 	with open('config.ini', 'w') as configfile:
 		config.write(configfile)
+
+#remove duplicate numbers from list
+def remove_duplicates(values):
+    output = []
+    seen = set()
+    for value in values:
+        # If value has not been encountered yet,
+        # ... add it to both list and set.
+        if value not in seen:
+            output.append(value)
+            seen.add(value)
+    return output
+	
+#merge two python dict two one dict
+def merge_two_dicts(x, y):
+    z = x.copy()   # start with x's keys and values
+    z.update(y)    # modifies z with y's keys and values & returns None
+    return z
