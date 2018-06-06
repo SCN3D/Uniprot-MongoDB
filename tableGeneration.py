@@ -17,9 +17,11 @@ import functions
 
 	
 def tableGeneration(filepath,fts):
-	table = functions.connectMongoDB('test','table')
+	table = functions.connectMongoDB('uniprot','table')
 	# Open a file
 	id_flag = 0
+	ac_flag = 0
+	out_ac = []
 	out_position = []
 	out_data = dict()
 	special = 0
@@ -32,7 +34,13 @@ def tableGeneration(filepath,fts):
 			if parsed_1[0] == "ID" and  id_flag == 0:
 				id_flag = 1
 				out_id = parsed_1[1]
-				out_data = {'_id' : out_id}
+			elif parsed_1[0] == "AC" and  ac_flag == 0:
+				ac_flag = 1	
+				out_ac.append(parsed_1[1])
+				if len(data)  > 2:
+					for x in range(1, len(data)-1):
+						out_ac.append(data[x])
+				out_data = {'_id' : out_id,'ac':out_ac}
 			##[go,interpro,pfam,prosite,smart,supfam]
 			elif parsed_1[0] == "FT":
 				if len(parsed_1) > 4 and special == 0:
@@ -64,14 +72,16 @@ def tableGeneration(filepath,fts):
 				out_data = functions.merge_two_dicts(out_data,fts)
 				sequence = ''.join(sequence.split())
 				out_data['sequence'] = sequence
-				print(out_data)
+				#print(out_data)
 				table.save(out_data)
 				fts = {'Phosphoserine':[],'Phosphothreonine':[],'Phosphotyrosine':[],'N6-acetyllysine':[],'Omega-N-methylarginine':[],
 				'N6-methyllysine':[],'N6,N6-dimethyllysine':[],'N6,N6,N6-trimethyllysine':[],'N-linked(GlcNAc)asparagine':[],
-				'S-palmitoylcysteine': [],'Pyrrolidonecarboxylicacid':[],'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-CterinSUMO)':[]}
+				'S-palmitoylcysteine': [],'Pyrrolidonecarboxylicacid':[],'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-CterinSUMO)':[]
+				,'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-Cterinubiquitin)':[]}
 				
 				##rewind
 				id_flag = 0	
+				ac_flag = 0
 				out_position = []
 	fp.close()
 	
@@ -85,7 +95,8 @@ def main():
 	
 	fts = {'Phosphoserine':[],'Phosphothreonine':[],'Phosphotyrosine':[],'N6-acetyllysine':[],'Omega-N-methylarginine':[],
 	'N6-methyllysine':[],'N6,N6-dimethyllysine':[],'N6,N6,N6-trimethyllysine':[],'N-linked(GlcNAc)asparagine':[],
-	'S-palmitoylcysteine': [],'Pyrrolidonecarboxylicacid':[],'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-CterinSUMO)':[]}
+	'S-palmitoylcysteine': [],'Pyrrolidonecarboxylicacid':[],'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-CterinSUMO)':[]
+	,'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-Cterinubiquitin)':[]}
 	
 	filepath = args.l
 	

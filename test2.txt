@@ -509,6 +509,8 @@ FT   CHAIN         1    128       Uncharacterized protein 007R.
 FT                                /FTId=PRO_0000410565.
 FT   CROSSLNK    4    4       Glycyl lysine isopeptide (Lys-Gly)
 FT                                (interchain with G-Cter in SUMO) 
+FT   CROSSLNK    5    5       Glycyl lysine isopeptide (Lys-Gly)
+FT                                (interchain with G-Cter in ubiquitin) 
 SQ   SEQUENCE   128 AA;  13707 MW;  9DD5475975A4405F CRC64;
      MRSIKPLRCC NAHGRHVSQE YGRCTLLLFR EKLFLQTGLV CNKQCNAPNN DGAESKHHGI
      HHGSRGALAL RGAGVHLLAS AALGPRVLAG LVPTGRSVQG SVGQCGRVAQ IGRARDVAAR
