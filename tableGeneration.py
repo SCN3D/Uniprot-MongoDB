@@ -80,9 +80,11 @@ def tableGeneration(filepath,fts):
 				,'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-Cterinubiquitin)':[]}
 				
 				##rewind
+				out_ac = []
 				id_flag = 0	
 				ac_flag = 0
 				out_position = []
+				sequence = ''
 	fp.close()
 	
 def main():
