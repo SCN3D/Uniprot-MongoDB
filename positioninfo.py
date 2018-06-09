@@ -1,11 +1,10 @@
 import functions
 import json
-from acs import pos_total
+from acs import pos_total as acs
 def main():
     dbname = 'uniprot'
     colname = 'table'
     collection = functions.connectMongoDB(dbname,colname)
-    acs = ['Q6GZW8']
     write2file = []
     ##
     with open('positionInfo.txt', 'w') as outfile:
