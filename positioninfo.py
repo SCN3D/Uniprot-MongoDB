@@ -6,6 +6,7 @@ def main():
     colname = 'ubiquitinTable'
     collection = functions.connectMongoDB(dbname,colname)
     write2file = []
+    takeoff = ['_id','ac']
     ##
     with open('positionInfo.txt', 'w') as outfile:
         for ac in acs:
@@ -13,8 +14,8 @@ def main():
             print(ac)
             temp = {'AC': ac}
             for output in result:
-                print(result[output])
-                temp[output] = {output:result[output]}
+                if output not in takeoff:
+                    temp[output] = result[output]
             write2file.append(temp)
         json.dump(write2file, outfile)
 if __name__== "__main__":

@@ -12,33 +12,28 @@ import re
 import itertools
 import functions
 
-	
+
 def ubiquitin(filepath,fts):
 	table = functions.connectMongoDB('uniprot','ubiquitinTable')
 	# Open a file
-	id_flag = 0
 	ac_flag = 0
 	out_ac = []
 	out_position = []
 	out_data = dict()
 	special = 0
-	sequence = ''
-    specials  = ['Glycyllysineisopeptide(Lys-Gly)','Peptide(Met-Gly)(interchain with G-Cter','Glycylserineester(Ser-Gly)','Glycylcysteinethioester(Cys-Gly)']
+	specials = ['Glycyllysineisopeptide(Lys-Gly)','Peptide(Met-Gly)(interchainwithG-Cter','Glycylserineester(Ser-Gly)','Glycylcysteinethioester(Cys-Gly)']
 	with open(filepath) as fp:
 		for line in fp:
 			collapsed = ' '.join(line.split())
 			data = collapsed.split(";")
 			parsed_1 = data[0].split(" ")
-			if parsed_1[0] == "ID" and  id_flag == 0:
-				id_flag = 1
-				out_id = parsed_1[1]
-			elif parsed_1[0] == "AC" and  ac_flag == 0:
+			if parsed_1[0] == "AC" and  ac_flag == 0:
 				ac_flag = 1	
 				out_ac.append(parsed_1[1])
 				if len(data)  > 2:
 					for x in range(1, len(data)-1):
 						out_ac.append(data[x])
-				out_data = {'_id' : out_id,'ac':out_ac}
+				out_data = {'ac':out_ac}
 			##[go,interpro,pfam,prosite,smart,supfam]
 			elif parsed_1[0] == "FT":
 				if len(parsed_1) > 4 and special == 0:
@@ -61,15 +56,9 @@ def ubiquitin(filepath,fts):
 						fts.setdefault(ft, []).append(out_position)
 						out_position = []
 					special = 0
-			##
-			## parse_1[0] is usually RT,DR,FT,or SQ etc... only squence part has length greater than 2
-			elif len(parsed_1[0]) > 2:
-				sequence += collapsed
 			elif parsed_1[0] == '//':
 				fts = dict( [(k,list(itertools.chain.from_iterable(v))) for k,v in fts.items() if len(v)>0]) #delete empty FTs from dictionary ##list(itertools.chain.from_iterable(v)) format 
 				out_data = functions.merge_two_dicts(out_data,fts)
-				sequence = ''.join(sequence.split())
-				out_data['sequence'] = sequence
 				#print(out_data)
 				table.save(out_data)
 				fts = {'Glycyllysineisopeptide(Lys-Gly)(interchainwithG-Cterinubiquitin)':[],'Glycylserineester(Ser-Gly)(interchainwithG-Cterinubiquitin)':[],
@@ -77,10 +66,9 @@ def ubiquitin(filepath,fts):
 				
 				##rewind
 				out_ac = []
-				id_flag = 0	
 				ac_flag = 0
 				out_position = []
-				sequence = ''
+				
 	fp.close()
 	
 def main():
